@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { EntityNotFoundError, QueryFailedError } from 'typeorm';
-import { DatabaseError } from 'pg-protocol';
 
 const PG_ERROR_CODES = {
   '22P02': 'Invalid input UUID',
@@ -21,6 +20,7 @@ export class ExceptionsFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
+    console.log(exception);
     const ctx = host.switchToHttp();
     const { httpAdapter } = this.httpAdapterHost;
 

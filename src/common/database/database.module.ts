@@ -11,6 +11,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
         return {
           ...dbConfig,
           logging: appConfig.debug,
+          maxQueryExecutionTime: 10,
         } as TypeOrmModuleOptions;
       },
     }),
