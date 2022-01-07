@@ -1,6 +1,6 @@
 import { HasUpload, UploadedFile } from '#common/utils';
 import { AuthUser } from '#modules/auth/decorators';
-import { User } from '#modules/user/entities/user.entity';
+import { User } from '#modules/user/entities';
 import {
   Controller,
   DefaultValuePipe,

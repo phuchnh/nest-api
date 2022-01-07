@@ -1,13 +1,12 @@
 import { AbstractEntity, Timestamps } from '#common/database';
 import { Attachment } from '#modules/attachment/entities';
+import { ProductAttachment } from './product-attachment.entity';
 import { User } from '#modules/user/entities';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -68,9 +67,16 @@ export class Product extends Timestamps(AbstractEntity) {
   @Column('timestamptz', { name: 'discontinue_at', nullable: true })
   discontinueAt!: Date;
 
-  @ManyToOne(() => Attachment, { onDelete: 'SET NULL' })
+  @Expose()
+  @Type(() => Attachment)
+  @ManyToOne(() => Attachment, { eager: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'featured_attachment_id', referencedColumnName: 'id' })
   featuredAttachment: Attachment;
+
+  @Expose()
+  @Type(() => ProductAttachment)
+  @OneToMany(() => ProductAttachment, (pa) => pa.product)
+  productAttachments: ProductAttachment[];
 
   @ManyToOne(() => User, { nullable: true, createForeignKeyConstraints: false })
   @JoinColumn({ name: 'created_by', referencedColumnName: 'id' })
@@ -79,12 +85,4 @@ export class Product extends Timestamps(AbstractEntity) {
   @ManyToOne(() => User, { nullable: true, createForeignKeyConstraints: false })
   @JoinColumn({ name: 'updated_by', referencedColumnName: 'id' })
   editor: User;
-
-  @ManyToMany(() => Attachment, { cascade: true })
-  @JoinTable({
-    name: 'product_attachment',
-    joinColumn: { name: 'product_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'attachment_id', referencedColumnName: 'id' },
-  })
-  attachments: Attachment[];
 }

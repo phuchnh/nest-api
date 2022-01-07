@@ -1,34 +1,70 @@
 import { Attachment } from '#modules/attachment/entities';
-import { plainToInstance } from 'class-transformer';
-import { CreateProductDto } from './create-product.dto';
+import { InvalidAttachmentException } from '#modules/attachment/exceptions';
+import { Product, ProductAttachment } from '#modules/product/entities';
 import { User } from '#modules/user/entities';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { EntityManager } from 'typeorm';
-import { Product } from '#modules/product/entities';
+import { CreateProductDto } from './create-product.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class CreateProductAction {
-  protected payload!: CreateProductDto;
-  protected creator!: User;
-  protected attachments!: { [p: string]: Attachment };
+  private product!: Product;
 
-  constructor(private readonly em: EntityManager) {}
+  constructor(private entityManager: EntityManager) {}
 
   async execute(creator: User, payload: CreateProductDto): Promise<Product> {
-    this.payload = payload;
-    this.creator = creator;
-    const product = plainToInstance(Product, payload);
-    if (this.hasAttachments()) {
-      this.checkAttachments();
+    const { featuredAttachment, attachments, ...attributes } = payload;
+    this.product = plainToInstance(Product, attributes);
+    return this.entityManager.transaction(async (transaction) => {
+      this.entityManager = transaction;
+      if (featuredAttachment) {
+        await this.addFeatureAttachmentOrFail(featuredAttachment);
+      }
+      if (attachments && attachments.length) {
+        await this.addAttachments(attachments);
+      }
+      return this.entityManager.save(this.product);
+    });
+  }
+
+  async addFeatureAttachmentOrFail(attachment: number): Promise<void> {
+    const featuredAttachment = await this.entityManager.findOne(
+      Attachment,
+      attachment,
+    );
+    if (!featuredAttachment) {
+      throw new InvalidAttachmentException(attachment);
     }
-    return this.em.save<Product>(product);
+    this.product.featuredAttachment = featuredAttachment;
   }
 
-  private hasAttachments(): boolean {
-    return this.payload.attachments && this.payload.attachments.length > 0;
+  async getAttachmentsOrFail(attachments: number[]): Promise<Attachment[]> {
+    const _attachments = await this.entityManager
+      .findByIds(Attachment, attachments)
+      .then((attachments) => {
+        return attachments.reduce((prev, attachment) => {
+          return { ...prev, [attachment.id]: attachment };
+        }, {});
+      });
+    for (const attachment of attachments) {
+      if (!_attachments[attachment]) {
+        throw new InvalidAttachmentException(attachment);
+      }
+    }
+    return Object.values(_attachments);
   }
 
-  private checkAttachments() {
-    const attachments = this.em.findByIds(Attachment, this.payload.attachments);
+  async addAttachments(attachments: number[]): Promise<void> {
+    const _attachments = await this.getAttachmentsOrFail(attachments);
+    const productAttachments = [];
+    for (const attachment of _attachments) {
+      const productAttachment = new ProductAttachment();
+      productAttachment.product = this.product;
+      productAttachment.attachment = attachment;
+      await this.entityManager.save(productAttachment);
+      productAttachments.push(productAttachment);
+    }
+    this.product.productAttachments = productAttachments;
   }
 }

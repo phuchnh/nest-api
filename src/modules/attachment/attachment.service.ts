@@ -27,7 +27,7 @@ export class AttachmentService {
     const { perPage, page } = options;
     return this.repository
       .createQueryBuilder('a')
-      .where('a.user = :userId', { userId: user.id })
+      .where('a.creator = :userId', { userId: user.id })
       .orderBy('a.createdAt', Sort.DESC)
       .paginate(perPage, page);
   }

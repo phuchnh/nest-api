@@ -49,9 +49,9 @@ export class CreateProductDto {
   @IsDateString()
   discontinueAt: Date;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsInt()
-  featuredAttachmentId: number;
+  featuredAttachment: number;
 
   @IsOptional()
   @IsArray()
