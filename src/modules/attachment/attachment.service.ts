@@ -2,13 +2,13 @@ import { S3_CLIENT } from '#common/providers';
 import { Sort } from '#common/types';
 import { Paginator, UploadedFile } from '#common/utils';
 import { AwsConfig, InjectAwsConfig } from '#config';
-import { User } from '#modules/user/user.entity';
+import { User } from '#modules/user/entities/user.entity';
 import { Inject, Injectable } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
 import moment from 'moment/moment';
 import { extname } from 'path';
 import randToken from 'rand-token';
-import { Attachment } from './attachment.entity';
+import { Attachment } from './entities/attachment.entity';
 import { AttachmentRepository } from './attachment.repository';
 import { UploadFailedException } from './exceptions';
 
@@ -43,7 +43,7 @@ export class AttachmentService {
       attachment.name = randToken.generate(16) + extname(file.originalname);
       attachment.size = file.size;
       attachment.path = `uploads/${prefix}/${attachment.name}`;
-      attachment.user = user;
+      attachment.creator = user;
 
       try {
         await this.s3

@@ -1,6 +1,6 @@
 import { Hash } from '#common/utils/Hash';
 import { Role } from '#modules/user/types';
-import { User } from '#modules/user/user.entity';
+import { User } from '#modules/user/entities';
 import { UserRepository } from '#modules/user/user.repository';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -25,12 +25,12 @@ export class AuthService {
   ) {}
 
   createRefreshToken(user: User): string {
-    const options: JwtSignOptions = { expiresIn: '90d' };
+    const options: JwtSignOptions = { expiresIn: '180d' };
     return this.jwtService.sign({ sub: user.id }, options);
   }
 
   createAccessToken(user: User): string {
-    const options: JwtSignOptions = {};
+    const options: JwtSignOptions = { expiresIn: '90d' };
     return this.jwtService.sign({ sub: user.id }, options);
   }
 
@@ -50,7 +50,7 @@ export class AuthService {
       LoggedInEvent.name,
       new LoggedInEvent(user.id, new Date(), refreshToken),
     );
-    return { ...user.toJSON(), accessToken, refreshToken };
+    return { accessToken, refreshToken };
   }
 
   async validateRefreshToken(token: string): Promise<string> {

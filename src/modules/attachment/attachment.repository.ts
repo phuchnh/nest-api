@@ -1,4 +1,4 @@
-import { Attachment } from './attachment.entity';
+import { Attachment } from './entities/attachment.entity';
 import { EntityRepository, Repository } from 'typeorm';
 
 @EntityRepository(Attachment)

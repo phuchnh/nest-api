@@ -1,4 +1,4 @@
-import { IS_PUBLIC_ROUTE_KEY } from '#modules/auth/decorators';
+import { SKIP_AUTH_METADATA_KEY } from '#modules/auth/decorators';
 import {
   InvalidTokenException,
   TokenExpiredException,
@@ -21,7 +21,7 @@ export class JwtAuthGuard extends AuthGuard(JWT_TOKEN_STRATEGY) {
 
   canActivate(context: ExecutionContext) {
     const isSkipAuth = this.reflector.getAllAndOverride<boolean>(
-      IS_PUBLIC_ROUTE_KEY,
+      SKIP_AUTH_METADATA_KEY,
       [context.getHandler(), context.getClass()],
     );
     return isSkipAuth || super.canActivate(context);

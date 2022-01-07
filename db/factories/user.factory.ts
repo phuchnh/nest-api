@@ -1,6 +1,6 @@
 import { Enum, Hash } from '#common/utils';
 import { Role } from '#modules/user/types';
-import { User } from '#modules/user/user.entity';
+import { User } from '#modules/user/entities/user.entity';
 import * as faker from 'faker';
 import { define } from 'typeorm-seeding';
 

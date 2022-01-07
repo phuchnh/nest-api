@@ -1,14 +1,12 @@
 import { AbstractEntity, Timestamps } from '#common/database';
-import { User } from '#modules/user/user.entity';
+import { User } from '#modules/user/entities';
 import { Expose } from 'class-transformer';
 import {
   Column,
   Entity,
-  Generated,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  RelationId,
 } from 'typeorm';
 
 @Entity('attachments')
@@ -16,6 +14,9 @@ export class Attachment extends Timestamps(AbstractEntity) {
   @Expose()
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ name: 'created_by', nullable: true })
+  createdBy: string;
 
   @Expose()
   @Column('varchar')
@@ -47,5 +48,5 @@ export class Attachment extends Timestamps(AbstractEntity) {
 
   @ManyToOne(() => User, { nullable: true, createForeignKeyConstraints: false })
   @JoinColumn({ name: 'created_by', referencedColumnName: 'id' })
-  user: User;
+  creator: User;
 }

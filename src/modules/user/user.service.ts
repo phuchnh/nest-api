@@ -2,7 +2,7 @@ import { Sort } from '#common/types';
 import { Paginator } from '#common/utils/Paginator';
 import { Injectable } from '@nestjs/common';
 import { FindConditions } from 'typeorm';
-import { User } from './user.entity';
+import { User } from './entities';
 import { UserRepository } from './user.repository';
 
 @Injectable()

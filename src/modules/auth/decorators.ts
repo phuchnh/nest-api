@@ -16,24 +16,24 @@ export const AuthUser = createParamDecorator(
   },
 );
 
-export const ROLES_KEY = 'auth.roles';
+export const ROLES_METADATA_KEY = 'auth.roles';
 
 export function HasRole(...roles: Role[]) {
   return applyDecorators(
-    SetMetadata(ROLES_KEY, [...new Set(roles)]),
+    SetMetadata(ROLES_METADATA_KEY, [...new Set(roles)]),
     UseGuards(RoleGuard),
   );
 }
 
-export const Cookies = createParamDecorator(
+export const Cookie = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     return data ? request.cookies?.[data] : request.cookies;
   },
 );
 
-export const IS_PUBLIC_ROUTE_KEY = 'IS_PUBLIC_ROUTE';
+export const SKIP_AUTH_METADATA_KEY = 'SKIP_AUTH_METADATA_KEY';
 
-export const IsPublicRoute = () => {
-  return applyDecorators(SetMetadata(IS_PUBLIC_ROUTE_KEY, true));
+export const SkipAuth = () => {
+  return applyDecorators(SetMetadata(SKIP_AUTH_METADATA_KEY, true));
 };

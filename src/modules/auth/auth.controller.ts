@@ -1,6 +1,6 @@
-import { AuthUser, Cookies, IsPublicRoute } from '#modules/auth/decorators';
+import { AuthUser, Cookie, SkipAuth } from '#modules/auth/decorators';
 import { Role } from '#modules/user/types';
-import { User } from '#modules/user/user.entity';
+import { User } from '#modules/user/entities';
 import {
   Body,
   Controller,
@@ -23,7 +23,7 @@ export const REFRESH_TOKEN_KEY = 'X-Refresh-Token';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @IsPublicRoute()
+  @SkipAuth()
   @Post('login')
   async login(
     @Res({ passthrough: true }) res: Response,
@@ -46,8 +46,8 @@ export class AuthController {
   }
 
   @Get('token/refresh')
-  @IsPublicRoute()
-  async refreshToken(@Cookies(REFRESH_TOKEN_KEY) refreshToken: string) {
+  @SkipAuth()
+  async refreshToken(@Cookie(REFRESH_TOKEN_KEY) refreshToken: string) {
     const accessToken = await this.authService.validateRefreshToken(
       refreshToken,
     );

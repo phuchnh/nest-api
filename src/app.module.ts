@@ -2,6 +2,7 @@ import { DatabaseModule } from '#common/database';
 import { appConfig, authConfig, awsConfig, databaseConfig } from '#config';
 import { AttachmentModule } from '#modules/attachment/attachment.module';
 import { AuthModule } from '#modules/auth/auth.module';
+import { ProductModule } from '#modules/product/product.module';
 import { UserModule } from '#modules/user/user.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -19,6 +20,7 @@ const configurations = [appConfig, databaseConfig, authConfig, awsConfig];
     UserModule,
     AuthModule,
     AttachmentModule,
+    ProductModule,
   ],
   controllers: [],
   providers: [],

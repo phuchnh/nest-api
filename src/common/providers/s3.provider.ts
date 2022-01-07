@@ -2,7 +2,7 @@ import { AwsConfig, awsConfig } from '#config';
 import { S3 } from 'aws-sdk';
 import { isEmpty } from 'class-validator';
 
-export const S3_CLIENT = 'S3_CONNECTION';
+export const S3_CLIENT = 'S3_CLIENT';
 
 export const S3ClientFactory = {
   provide: S3_CLIENT,

@@ -1,11 +1,7 @@
 import { Expose, instanceToPlain } from 'class-transformer';
 import { CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
 
-export interface IEntity {
-  toJSON(): Record<string, any>;
-}
-
-export class AbstractEntity implements IEntity {
+export class AbstractEntity {
   toJSON(): Record<string, any> {
     return instanceToPlain(this, { excludeExtraneousValues: true });
   }

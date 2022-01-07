@@ -9,5 +9,6 @@ import { Module } from '@nestjs/common';
   imports: [TypeOrmModule.forFeature([AttachmentRepository])],
   controllers: [AttachmentController],
   providers: [AttachmentService, S3ClientFactory],
+  exports: [AttachmentService],
 })
 export class AttachmentModule {}

@@ -1,10 +1,10 @@
-import { AbstractEntity, IEntity, SoftDeletes, Timestamps } from '#common/database';
+import { AbstractEntity, SoftDeletes, Timestamps } from '#common/database';
 import { Role } from '#modules/user/types';
 import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
-export class User extends Timestamps(SoftDeletes(AbstractEntity)) implements IEntity {
+export class User extends Timestamps(SoftDeletes(AbstractEntity)) {
   @Expose()
   @PrimaryGeneratedColumn('uuid')
   id: string;
